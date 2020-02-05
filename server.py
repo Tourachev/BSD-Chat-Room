@@ -6,8 +6,8 @@ import sys
 
 from thread import *
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) \
+soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) \
 
 # If different length output message and exit
 if len(sys.argv) !=3:
@@ -26,6 +26,8 @@ if not helper_methods.is_valid_ipv4_address(IP):
 if not helper_methods.is_valid_port(PORT):
     print "Port is invalid. \nExiting now...."
     exit()
+
+soc.bind((IP, PORT))
 
 print("IP: " + sys.argv[1] + "\nPort Number: " + sys.argv[2])
 
