@@ -20,3 +20,9 @@ def is_valid_ipv6_address(address):
     except socket.error:
         return False
     return True
+
+def is_valid_port(port):
+    if 1 <= port <= 65535:
+        return True
+    else:
+        return False

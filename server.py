@@ -1,6 +1,6 @@
 
 import socket
-import help
+import helper_methods
 import select
 import sys
 
@@ -17,12 +17,17 @@ if len(sys.argv) !=3:
 IP = str(sys.argv[1])
 PORT = str(sys.argv[2])
 
-
+# IP Validation
+if not helper_methods.is_valid_ipv4_address(IP):
+    if not helper_methods.is_valid_ipv6_address(IP):
+        print "IP is invalid. \nExiting now...."
+        exit()
+#Port Validation
+if not helper_methods.is_valid_port(PORT):
+    print "Port is invalid. \nExiting now...."
+    exit()
 
 print("IP: " + sys.argv[1] + "\nPort Number: " + sys.argv[2])
 
 
 
-if not is_valid_ipv4_address(IP) or is_valid_ipv6_address(IP):
-    print "fail"
-    exit()
