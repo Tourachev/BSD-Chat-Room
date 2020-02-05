@@ -16,6 +16,7 @@ if len(sys.argv) !=3:
 
 IP = str(sys.argv[1])
 PORT = int(str(sys.argv[2]))
+TIMEOUT = 60
 clients = []
 
 # IP Validation
@@ -29,7 +30,7 @@ if not helper_methods.is_valid_port(PORT):
     exit()
 
 # Good to go message
-print("Connecting using: \nIP: " + sys.argv[1] + "\nPort Number: " + sys.argv[2])
+print("Setting up using: \nIP: " + sys.argv[1] + "\nPort Number: " + sys.argv[2])
 
 try:
     soc.bind((IP, PORT))
@@ -38,6 +39,7 @@ except:
 
 # 100 connections
 soc.listen(100)
+print('-----------------------\nServer listening....')
 
 # Remove clients method
 def remove(connection, clients):
@@ -63,13 +65,15 @@ def clientthread(conn, addr):
 
 while True:
     conn, addr = soc.accept()
+    conn.settimeout(TIMEOUT)
+
     clients.append(conn)
     # prints the address of the user that just connected
     print addr[0] + " connected"
     start_new_thread(clientthread, (conn, addr))
 
 conn.close()
-server.close()
+soc.close()
 
 
 
