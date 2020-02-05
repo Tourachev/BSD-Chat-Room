@@ -15,7 +15,8 @@ if len(sys.argv) !=3:
     exit()
 
 IP = str(sys.argv[1])
-PORT = str(sys.argv[2])
+PORT = int(str(sys.argv[2]))
+clients = []
 
 # IP Validation
 if not helper_methods.is_valid_ipv4_address(IP):
@@ -27,9 +28,50 @@ if not helper_methods.is_valid_port(PORT):
     print "Port is invalid. \nExiting now...."
     exit()
 
-soc.bind((IP, PORT))
+# Good to go message
+print("Connecting using: \nIP: " + sys.argv[1] + "\nPort Number: " + sys.argv[2])
 
-print("IP: " + sys.argv[1] + "\nPort Number: " + sys.argv[2])
+try:
+    soc.bind((IP, PORT))
+except:
+    print "Error using provided IP or Port"
+
+# 100 connections
+soc.listen(100)
+
+# Remove clients method
+def remove(connection, clients):
+    if connection in clients:
+       clients.remove(connection)
+
+# Basic content of chat.
+def clientthread(conn, addr):
+    conn.send("Welcome to this chatroom!")
+    while True:
+        try:
+            message = conn.recv(2048)
+            if message:
+                print "<" + addr[0] + "> " + message
+                message_to_send = "<" + addr[0] + "> " + message
+                broadcast(message_to_send, conn)
+            else:
+                # Remove if broken
+                remove(conn)
+        except:
+            continue
+
+
+while True:
+    conn, addr = soc.accept()
+    clients.append(conn)
+    # prints the address of the user that just connected
+    print addr[0] + " connected"
+    start_new_thread(clientthread, (conn, addr))
+
+conn.close()
+server.close()
+
+
 
 
 
